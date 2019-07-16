@@ -12,8 +12,34 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>user</servlet-name>
-        <url-pattern>/crm/user/select.do</url-pattern>
+        <url-pattern>/setting/user/login.do</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>Activity</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.ActivityServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Activity</servlet-name>
+        <url-pattern>/workbench/activity/allOwner.do</url-pattern>
+        <url-pattern>/workbench/activity/add.do</url-pattern>
+    </servlet-mapping>
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>com.bjpowernode.crm.web.filter.LoginFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>com.bjpowernode.crm.web.filter.EncodingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+        <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
 </web-app>
 
 

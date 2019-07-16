@@ -7,10 +7,8 @@
     <properties resource="jdbc.properties"/>
 
     <typeAliases>
-
-        <package name="com.bjpowernode.domain"/>
-
-
+        <package name="com.bjpowernode.crm.setting.domain"/>
+        <package name="com.bjpowernode.crm.workbench.domain"/>
     </typeAliases>
 
     <environments default="development">
@@ -28,7 +26,8 @@
 
     <mappers>
 
-        <package name="com.bjpowernode.dao"/>
+        <package name="com.bjpowernode.crm.setting.dao"/>
+        <package name="com.bjpowernode.crm.workbench.dao"/>
 
     </mappers>
 </configuration>

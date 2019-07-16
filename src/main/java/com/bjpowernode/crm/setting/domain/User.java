@@ -12,7 +12,7 @@ public class User {
     private String email;       //伊妹儿
     private String expireTime;  //账户失效时间
     private String lockState;   //是否锁定
-    private String deptno;      //部门编号
+    private String deptNo;      //部门编号
     private String allowIps;    //允许的ip地址群
     private String createTime;  //创建的时间
     private String createBy;    //创建人
@@ -85,12 +85,12 @@ public class User {
         return this;
     }
 
-    public String getDeptno() {
-        return deptno;
+    public String getDeptNo() {
+        return deptNo;
     }
 
-    public User setDeptno(String deptno) {
-        this.deptno = deptno;
+    public User setDeptNo(String deptNo) {
+        this.deptNo = deptNo;
         return this;
     }
 
@@ -149,7 +149,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", expireTime='" + expireTime + '\'' +
                 ", lockState='" + lockState + '\'' +
-                ", deptno='" + deptno + '\'' +
+                ", deptNo='" + deptNo + '\'' +
                 ", allowIps='" + allowIps + '\'' +
                 ", createTime='" + createTime + '\'' +
                 ", createBy='" + createBy + '\'' +
