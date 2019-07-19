@@ -26,7 +26,7 @@ public class SqlSessionUtil {
         factory = new SqlSessionFactoryBuilder().build(inputStream);
     }
 
-    private static ThreadLocal<SqlSession> t = new ThreadLocal<SqlSession>();
+    private static ThreadLocal<SqlSession> t = new ThreadLocal<>();
 
     public static SqlSession getSqlSession() {
         SqlSession session = t.get();

@@ -7,7 +7,7 @@ To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
 %>
 <!DOCTYPE html>
 <html>
@@ -58,8 +58,140 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             $(".myHref").mouseout(function () {
                 $(this).children("span").css("color", "#E6E6E6");
             });
+
+            getRemarkListByAid();
+            $("#saveBtn").click(function () {
+                $.ajax({
+                    url: "workbench/activity/saveRemark.do",
+                    type: "post",
+                    dataType: "json",
+                    data: {
+                        'noteContent': $("#remark").val(),
+                        'createBy': '${cookie.get("loginAct").value}',
+                        'createTime': getSystemTime(),
+                        'activityId': $("input[name=activityId]").val()
+                    },
+                    success: function (data) {
+                        $("#remark").val("");
+                        if (data.success) {
+                            var item = data.arm;
+                            var html = "";
+                            html += '<div id="d' + item.id + '" class="remarkDiv" style="height: 60px;">';
+                            html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
+                            html += '<div style="position: relative; top: -40px; left: 40px;">';
+                            html += '<h5>' + (item.noteContent) + '</h5>';
+                            html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${requestScope.activity.name}</b>';
+                            html += '<small style="color: gray;"> ' + (item.editFlag == 0 ? item.createTime : item.editTime) + ' 由' + (item.editFlag == 0 ? item.createBy : item.editBy) + '</small>';
+                            html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px;">';
+                            html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\'' + item.id + '\')"><span class="glyphicon glyphicon-edit" style="font-size:20px;color:red;"></span></a>';
+                            html += '&nbsp;&nbsp;&nbsp;&nbsp;';
+                            html += '<a class="myHref" href="javascript:void(0);" onclick="deleteRemark(\'' + item.id + '\')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: red;"></span></a>';
+                            html += '</div>';
+                            html += '</div>';
+                            html += '</div>';
+                            $("#remarkDiv").before(html);
+                        } else {
+                            alert("保存市场活动备注失败");
+                        }
+                    }
+                });
+            });
+            $("#updateRemarkBtn").click(function () {
+                var id = $("#remarkId").val();
+                var val = $("#noteContent").val();
+                $.ajax({
+                    url: "workbench/activity/editRemark.do",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        'id': id,
+                        'noteContent': val,
+                        'editTime': getSystemTime(),
+                        'editBy': '${cookie.get("loginAct").value}'
+                    },
+                    success: function (data) {
+                        if (data) {
+                            $("#editRemarkModal").modal("hide");
+                            $("#t" + id).html(val)
+                        } else {
+                            alert("备注修改失败");
+                        }
+                    }
+                })
+            });
         });
 
+        function getRemarkListByAid() {
+            $.ajax({
+                url: "workbench/activity/getRemarkListByAid.do",
+                type: "get",
+                dataType: "json",
+                data: {
+                    'id': $("input[name=activityId]").val()
+                },
+                success: function (data) {
+                    if (data.success) {
+                        $.each(data.arm, function (i, item) {
+                            var html = "";
+                            html += '<div id="d' + item.id + '" class="remarkDiv" style="height: 60px;">';
+                            html += '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
+                            html += '<div style="position: relative; top: -40px; left: 40px;">';
+                            html += '<h5 id="t' + item.id + '">' + (item.noteContent) + '</h5>';
+                            html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${requestScope.activity.name}</b>';
+                            html += '<small style="color: gray;"> ' + (item.editFlag == 0 ? item.createTime : item.editTime) + ' 由' + (item.editFlag == 0 ? item.createBy : item.editBy) + '</small>';
+                            html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px;">';
+                            html += '<a class="myHref" href="javascript:void(0);" onclick="editRemark(\'' + item.id + '\')"><span class="glyphicon glyphicon-edit" style="font-size:20px;color:red;"></span></a>';
+                            html += '&nbsp;&nbsp;&nbsp;&nbsp;';
+                            html += '<a class="myHref" href="javascript:void(0);" onclick="deleteRemark(\'' + item.id + '\')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: red;"></span></a>';
+                            html += '</div>';
+                            html += '</div>';
+                            html += '</div>';
+                            $("#remarkDiv").before(html);
+                        })
+                    } else {
+                        alert("市场活动备注异步请求失败");
+                    }
+                }
+            })
+        }
+
+        function editRemark(id) {
+            $("#editRemarkModal").modal("show");
+            $("#remarkId").val(id);
+        }
+
+        function deleteRemark(id) {
+            if (confirm("确定要删除选定的备注吗？")) {
+                $.ajax({
+                    url: "workbench/activity/removeRemark.do",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        'id': id
+                    },
+                    success: function (data) {
+                        if (data) {
+                            $("#d" + id).remove();
+                        } else {
+                            alert("备注删除失败");
+                        }
+                    }
+                })
+            }
+        }
+
+        //yyyy-MM-dd hh:mm:ss 19位
+        function getSystemTime() {
+            var time = "";
+            var date = new Date();
+            time += date.getFullYear() + "-";
+            time += (date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1) + "-";
+            time += (date.getDate() < 10 ? "0" + date.getDate() : date.getDate()) + " ";
+            time += (date.getHours() < 10 ? "0" + date.getHours() : date.getHours()) + ":";
+            time += (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) + ":";
+            time += date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+            return time;
+        }
     </script>
 
 </head>
@@ -156,7 +288,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+                <button type="button" class="btn btn-primary">更新</button>
             </div>
         </div>
     </div>
@@ -171,8 +303,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <!-- 大标题 -->
 <div style="position: relative; left: 40px; top: -30px;">
     <div class="page-header">
-        <h3>市场活动-发传单
-            <small>2020-10-10 ~ 2020-10-20</small>
+        <h3>市场活动-${requestScope.activity.name}
+            <small>${requestScope.activity.startDate} ~ ${requestScope.activity.endDate}</small>
         </h3>
     </div>
     <div style="position: relative; height: 50px; width: 250px;  top: -72px; left: 700px;">
@@ -185,39 +317,45 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 <!-- 详细信息 -->
 <div style="position: relative; top: -70px;">
+    <input type="hidden" name="activityId" value="${requestScope.activity.id}">
     <div style="position: relative; left: 40px; height: 30px;">
         <div style="width: 300px; color: gray;">所有者</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>zhangsan</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${requestScope.activity.owner}</b>
+        </div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">名称</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>发传单</b></div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${requestScope.activity.name}</b>
+        </div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
 
     <div style="position: relative; left: 40px; height: 30px; top: 10px;">
         <div style="width: 300px; color: gray;">开始日期</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>2020-10-10</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${requestScope.activity.startDate}</b>
+        </div>
         <div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">结束日期</div>
-        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>2020-10-20</b></div>
+        <div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${requestScope.activity.endDate}</b>
+        </div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 20px;">
         <div style="width: 300px; color: gray;">成本</div>
-        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>4,000</b></div>
+        <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${requestScope.activity.cost}</b>
+        </div>
         <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 30px;">
         <div style="width: 300px; color: gray;">创建者</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>zhangsan&nbsp;&nbsp;</b>
-            <small style="font-size: 10px; color: gray;">2017-01-18 10:10:10</small>
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${requestScope.activity.createBy}&nbsp;&nbsp;</b>
+            <small style="font-size: 10px; color: gray;">${requestScope.activity.createTime}</small>
         </div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
     <div style="position: relative; left: 40px; height: 30px; top: 40px;">
         <div style="width: 300px; color: gray;">修改者</div>
-        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>zhangsan&nbsp;&nbsp;</b>
-            <small style="font-size: 10px; color: gray;">2017-01-19 10:10:10</small>
+        <div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${requestScope.activity.editBy}&nbsp;&nbsp;</b>
+            <small style="font-size: 10px; color: gray;">${requestScope.activity.editTime}</small>
         </div>
         <div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
     </div>
@@ -225,7 +363,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
         <div style="width: 300px; color: gray;">描述</div>
         <div style="width: 630px;position: relative; left: 200px; top: -20px;">
             <b>
-                市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等
+                ${requestScope.activity.description}
             </b>
         </div>
         <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
@@ -238,47 +376,13 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
         <h4>备注</h4>
     </div>
 
-    <!-- 备注1 -->
-    <div class="remarkDiv" style="height: 60px;">
-        <img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-        <div style="position: relative; top: -40px; left: 40px;">
-            <h5>哎呦！</h5>
-            <font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b>
-            <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
-            <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
-            </div>
-        </div>
-    </div>
-
-    <!-- 备注2 -->
-    <div class="remarkDiv" style="height: 60px;">
-        <img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-        <div style="position: relative; top: -40px; left: 40px;">
-            <h5>呵呵！</h5>
-            <font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b>
-            <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
-            <div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"
-                                                                   style="font-size: 20px; color: #E6E6E6;"></span></a>
-            </div>
-        </div>
-    </div>
-
     <div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
         <form role="form" style="position: relative;top: 10px; left: 10px;">
             <textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"
                       placeholder="添加备注..."></textarea>
             <p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
                 <button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-primary" id="saveBtn">保存</button>
             </p>
         </form>
     </div>

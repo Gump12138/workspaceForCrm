@@ -22,7 +22,42 @@
         <servlet-name>Activity</servlet-name>
         <url-pattern>/workbench/activity/allOwner.do</url-pattern>
         <url-pattern>/workbench/activity/add.do</url-pattern>
+        <url-pattern>/workbench/activity/search.do</url-pattern>
+        <url-pattern>/workbench/activity/delete.do</url-pattern>
+        <url-pattern>/workbench/activity/update.do</url-pattern>
+        <url-pattern>/workbench/activity/selectOne.do</url-pattern>
+        <url-pattern>/workbench/activity/detail.do</url-pattern>
+        <url-pattern>/workbench/activity/getRemarkListByAid.do</url-pattern>
+        <url-pattern>/workbench/activity/saveRemark.do</url-pattern>
+        <url-pattern>/workbench/activity/editRemark.do</url-pattern>
+        <url-pattern>/workbench/activity/removeRemark.do</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>Clue</servlet-name>
+        <servlet-class>com.bjpowernode.crm.workbench.web.controller.ClueServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Clue</servlet-name>
+        <!--index-->
+        <url-pattern>/workbench/clue/getUserList.do</url-pattern>
+        <url-pattern>/workbench/clue/pageList.do</url-pattern>
+        <url-pattern>/workbench/clue/getUserListAndActivity.do</url-pattern>
+        <url-pattern>/workbench/clue/detail.do</url-pattern>
+        <!--detail-Remark-->
+        <url-pattern>/workbench/clue/getRemarkListByCid.do</url-pattern>
+        <url-pattern>/workbench/clue/saveRemark.do</url-pattern>
+        <url-pattern>/workbench/clue/editRemark.do</url-pattern>
+        <url-pattern>/workbench/clue/removeRemark.do</url-pattern>
+        <!--detal-Activity-->
+        <url-pattern>/workbench/clue/getActivityListByCid.do</url-pattern>
+        <url-pattern>/workbench/clue/unbound.do</url-pattern>
+        <url-pattern>/workbench/clue/getActivityListByNameAndNotByClueId.do</url-pattern>
+        <url-pattern>/workbench/clue/bound.do</url-pattern>
+        <url-pattern>/workbench/clue/convert.do</url-pattern>
+    </servlet-mapping>
+    <listener>
+        <listener-class>com.bjpowernode.crm.web.listen.SysListen</listener-class>
+    </listener>
     <filter>
         <filter-name>LoginFilter</filter-name>
         <filter-class>com.bjpowernode.crm.web.filter.LoginFilter</filter-class>

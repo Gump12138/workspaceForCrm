@@ -48,9 +48,7 @@ public class UserServlet extends HttpServlet {
             request.getSession().setAttribute("user", u1);
             map.put("success", true);
             if (unLogin != null) {
-                Cookie cookie = new Cookie("loginAct", u1.getLoginAct());
-                cookie.setMaxAge(999);
-                response.addCookie(cookie);
+                map.put("loginAct", u1.getName());
             }
             response.getWriter().print(JSON.toJSONString(map));
         } catch (LoginException e) {

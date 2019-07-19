@@ -18,13 +18,13 @@ To change this template use File | Settings | File Templates.
     <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
     <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript">
+        
         $(function () {
             $("[name=loginAct]").focus();
             $("[name=loginAct]").val("");
             $("#loginBt").click(login);
             $("#testBt").click(test);
         });
-
         //表单检验
         function check() {
             var loginAct = $.trim($("[name=loginAct]").val());
@@ -38,7 +38,6 @@ To change this template use File | Settings | File Templates.
                 $msg.html("");
             }
         }
-
         //提交表单
         function login() {
             check();
@@ -53,6 +52,7 @@ To change this template use File | Settings | File Templates.
                     success: function (data) {
                         if (data.success) {
                             $msg.html("成功登陆");
+                            document.cookie = "loginAct=" + data.loginAct;
                             window.location.href = "workbench/index.jsp";
                         } else {
                             $msg.html(data.msg);
@@ -61,10 +61,11 @@ To change this template use File | Settings | File Templates.
                 });
             }
         }
-
+        //免登陆直接跳转
         function test() {
-            console.log(document.cookie)
+            window.location.href = "workbench/index.jsp";
         }
+
     </script>
 </head>
 <body>
@@ -102,7 +103,7 @@ To change this template use File | Settings | File Templates.
                 <input type="hidden" name="Gm" value="">
                 <input type="button" id="loginBt" value="登录" class="btn btn-primary btn-lg btn-block"
                        style="width: 350px; position: relative;top: 45px;">
-                <input type="button" id="testBt" value="跳转" class="btn btn-primary btn-lg btn-block"
+                <input type="button" id="testBt" value="免登陆直接走" class="btn btn-primary btn-lg btn-block"
                        style="width: 350px; position: relative;top: 45px;">
             </div>
         </form>

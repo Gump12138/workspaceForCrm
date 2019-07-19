@@ -39,11 +39,12 @@ public class TransactionInvocationHandler implements InvocationHandler {
                 session.rollback();
             }
             //如果是登陆异常，继续往上抛
-            if (LoginException.class == e.getCause().getClass().getSuperclass()) {
+            if ( e.getCause().getClass().isAssignableFrom(LoginException.class)) {
                 throw e.getCause();
             } else {
                 e.printStackTrace();
             }
+
         } finally {
             SqlSessionUtil.close(session);
         }

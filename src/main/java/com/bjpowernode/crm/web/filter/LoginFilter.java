@@ -20,19 +20,19 @@ public class LoginFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
         Object user = request.getSession().getAttribute("user");
         if (user == null) {
-            Cookie[] cookies = request.getCookies();
-            for (Cookie cookie : cookies) {
-                if ("loginAct".equals(cookie.getName())) {
-                    System.out.println("找到Cookie免登录");
-                    chain.doFilter(req, resp);
-                    return;
-                }
-            }
-            System.out.println("浏览器中没有存有免登陆Cookie");
             String path = request.getServletPath();
             if ("login.jsp".equals(path) || "/setting/user/login.do".equals(path)) {
                 chain.doFilter(req, resp);
             } else {
+                Cookie[] cookies = request.getCookies();
+                if (cookies != null && cookies.length != 0) {
+                    for (Cookie cookie : cookies) {
+                        if ("loginAct".equals(cookie.getName())) {
+                            chain.doFilter(req, resp);
+                            return;
+                        }
+                    }
+                }
                 request.getRequestDispatcher("/login.jsp").forward(request, response);
                 chain.doFilter(req, resp);
             }

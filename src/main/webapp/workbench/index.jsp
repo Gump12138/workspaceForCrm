@@ -156,7 +156,7 @@ To change this template use File | Settings | File Templates.
             <li class="dropdown user-dropdown">
                 <a href="javascript:void(0)" style="text-decoration: none; color: white; margin-left: 50px" class="dropdown-toggle"
                    data-toggle="dropdown">
-                    <span class="glyphicon glyphicon-user"></span>${sessionScope.user.name}<span class="caret"></span>
+                    <span class="glyphicon glyphicon-user"></span>${cookie.get("loginAct").value}<span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
                     <li><a href="settings/index.html"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
@@ -189,15 +189,15 @@ To change this template use File | Settings | File Templates.
                     class="glyphicon glyphicon-user"></span> 客户公海</a></li>
             <li class="liClass"><a href="workbench/activity/index.jsp" target="workareaFrame"><span
                     class="glyphicon glyphicon-play-circle"></span> 市场活动</a></li>
-            <li class="liClass"><a href="clue/index.html" target="workareaFrame"><span
+            <li class="liClass"><a href="workbench/clue/index.jsp" target="workareaFrame"><span
                     class="glyphicon glyphicon-search"></span> 线索（潜在客户）</a></li>
-            <li class="liClass"><a href="customer/index.html" target="workareaFrame"><span
+            <li class="liClass"><a href="workbench/customer/index.html" target="workareaFrame"><span
                     class="glyphicon glyphicon-user"></span> 客户</a></li>
-            <li class="liClass"><a href="contacts/index.html" target="workareaFrame"><span
+            <li class="liClass"><a href="workbench/contacts/index.html" target="workareaFrame"><span
                     class="glyphicon glyphicon-earphone"></span> 联系人</a></li>
-            <li class="liClass"><a href="transaction/index.html" target="workareaFrame"><span
+            <li class="liClass"><a href="workbench/transaction/index.html" target="workareaFrame"><span
                     class="glyphicon glyphicon-usd"></span> 交易（商机）</a></li>
-            <li class="liClass"><a href="visit/index.html" target="workareaFrame"><span
+            <li class="liClass"><a href="workbench/visit/index.html" target="workareaFrame"><span
                     class="glyphicon glyphicon-phone-alt"></span> 售后回访</a></li>
             <li class="liClass">
                 <a href="#no2" class="collapsed" data-toggle="collapse"><span class="glyphicon glyphicon-stats"></span>
